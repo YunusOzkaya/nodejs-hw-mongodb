@@ -9,7 +9,9 @@ const Contact = require('../src/models/Contact');
 async function main() {
   try {
     const fileArg = process.argv[2] || 'contacts.json';
-    const filePath = path.isAbsolute(fileArg) ? fileArg : path.join(process.cwd(), fileArg);
+    const filePath = path.isAbsolute(fileArg)
+      ? fileArg
+      : path.join(process.cwd(), fileArg);
 
     if (!fs.existsSync(filePath)) {
       console.error(`File not found: ${filePath}`);

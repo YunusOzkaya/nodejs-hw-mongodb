@@ -2,7 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const pino = require('pino-http')();
 
-const { getAllContactsCtrl, getContactByIdCtrl } = require('./controllers/contacts');
+const {
+  getAllContactsCtrl,
+  getContactByIdCtrl,
+} = require('./controllers/contacts');
 
 function setupServer() {
   const app = express();
