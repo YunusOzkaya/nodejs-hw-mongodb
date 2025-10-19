@@ -1,22 +1,20 @@
+require('dotenv').config();
 const express = require('express');
-const cors = require('cors');
-const pino = require('pino-http')();
+const mongoose = require('mongoose');
+const contactsRouter = require('./routers/contacts');
+const notFoundHandler = require('./middlewares/notFoundHandler');
+const errorHandler = require('./middlewares/errorHandler');
 
-const {
-  getAllContactsCtrl,
-  getContactByIdCtrl,
-} = require('./controllers/contacts');
+const app = express();
+app.use(express.json());
+app.use('/contacts', contactsRouter);
+app.use(notFoundHandler);
+app.use(errorHandler);
 
-function setupServer() {
-  const app = express();
-  app.use(cors());
-  app.use(pino);
-
-  app.get('/contacts', getAllContactsCtrl);
-  app.get('/contacts/:contactId', getContactByIdCtrl);
-
-  app.use((req, res) => res.status(404).json({ message: 'Not found' }));
-  return app;
-}
-
-module.exports = { setupServer };
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log('Connected to MongoDB');
+    app.listen(process.env.PORT || 3000);
+  })
+  .catch((err) => console.error('Mongo connection error:', err.message));

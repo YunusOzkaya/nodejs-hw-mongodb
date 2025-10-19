@@ -1,11 +1,17 @@
-const Contact = require('../models/Contact');
+const Contact = require("../models/contact");
 
-async function getAllContacts() {
-  return Contact.find().lean();
-}
+const createContact = data => Contact.create(data);
 
-async function getContactById(id) {
-  return Contact.findById(id).lean();
-}
+const getContactById = id => Contact.findById(id);
 
-module.exports = { getAllContacts, getContactById };
+const patchContactById = (id, data) =>
+  Contact.findByIdAndUpdate(id, data, { new: true, runValidators: true });
+
+const deleteContactById = id => Contact.findByIdAndDelete(id);
+
+module.exports = {
+  createContact,
+  getContactById,
+  patchContactById,
+  deleteContactById
+};
