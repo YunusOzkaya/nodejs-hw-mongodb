@@ -1,9 +1,10 @@
 const express = require('express')
-const { getById, create, patch, remove } = require('../controllers/contacts')
+const { getAll, getById, create, patch, remove } = require('../controllers/contacts')
 const ctrlWrapper = require('../utils/ctrlWrapper')
 
 const router = express.Router()
 
+router.get('/', ctrlWrapper(getAll))          // 👈 bu satır yeni
 router.get('/:contactId', ctrlWrapper(getById))
 router.post('/', ctrlWrapper(create))
 router.patch('/:contactId', ctrlWrapper(patch))
