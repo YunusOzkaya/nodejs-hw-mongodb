@@ -1,6 +1,6 @@
 require('dotenv').config();
 const express = require('express');
-const { initMongoConnection } = require('./src/db/initMongoConnection');
+const { initMongoConnection } = require('./src/utils/initMongoConnection');
 const contactsRouter = require('./src/routers/contacts');
 const notFoundHandler = require('./src/middlewares/notFoundHandler');
 const errorHandler = require('./src/middlewares/errorHandler');
