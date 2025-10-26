@@ -1,9 +1,9 @@
 require('dotenv').config();
 const express = require('express');
-const { initMongoConnection } = require('./src/utils/initMongoConnection');
-const contactsRouter = require('./src/routers/contacts');
-const notFoundHandler = require('./src/middlewares/notFoundHandler');
-const errorHandler = require('./src/middlewares/errorHandler');
+const { initMongoConnection } = require('./utils/initMongoConnection');
+const contactsRouter = require('./routers/contacts');
+const notFoundHandler = require('./middlewares/notFoundHandler');
+const errorHandler = require('./middlewares/errorHandler');
 
 const app = express();
 app.use(express.json());
