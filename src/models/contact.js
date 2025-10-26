@@ -2,18 +2,13 @@ const { Schema, model } = require('mongoose');
 
 const contactSchema = new Schema(
   {
-    name: { type: String, required: true },
-    phoneNumber: { type: String, required: true },
-    email: { type: String },
-    isFavourite: { type: Boolean, default: false },
-    contactType: {
-      type: String,
-      enum: ['work', 'home', 'personal'],
-      default: 'personal',
-      required: true,
-    },
+    name: { type: String, required: true, minlength: 3, maxlength: 20, trim: true },
+    email: { type: String, required: true, minlength: 3, maxlength: 20, lowercase: true, trim: true },
+    phone: { type: String, required: true, minlength: 3, maxlength: 20, trim: true },
+    contactType: { type: String, enum: ['work','home','other'], required: true },
+    isFavourite: { type: Boolean, default: false }
   },
-  { timestamps: true },
+  { timestamps: true }
 );
 
 module.exports = model('Contact', contactSchema);

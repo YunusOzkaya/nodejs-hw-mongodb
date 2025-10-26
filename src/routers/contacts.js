@@ -1,13 +1,13 @@
-const express = require('express')
-const { getAll, getById, create, patch, remove } = require('../controllers/contacts')
-const ctrlWrapper = require('../utils/ctrlWrapper')
+const router = require('express').Router();
+const { list, getById, createOne, patchOne, removeOne } = require('../controllers/contacts');
+const validateBody = require('../middlewares/validateBody');
+const isValidId = require('../middlewares/isValidId');
+const { createContactSchema, updateContactSchema } = require('../schemas/contactSchemas');
 
-const router = express.Router()
+router.get('/', list);
+router.get('/:contactId', isValidId(), getById);
+router.post('/', validateBody(createContactSchema), createOne);
+router.patch('/:contactId', isValidId(), validateBody(updateContactSchema), patchOne);
+router.delete('/:contactId', isValidId(), removeOne);
 
-router.get('/', ctrlWrapper(getAll))          // 👈 bu satır yeni
-router.get('/:contactId', ctrlWrapper(getById))
-router.post('/', ctrlWrapper(create))
-router.patch('/:contactId', ctrlWrapper(patch))
-router.delete('/:contactId', ctrlWrapper(remove))
-
-module.exports = router
+module.exports = router;
