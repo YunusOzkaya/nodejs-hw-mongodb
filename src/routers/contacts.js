@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { list, getById, createOne, patchOne, removeOne } = require('../controllers/contacts');
-const validateBody = require('../middlewares/validateBody');
+const validateBody = require('../middlewares/validationBody');
 const isValidId = require('../middlewares/isValidId');
 const { createContactSchema, updateContactSchema } = require('../schemas/contactSchemas');
 
