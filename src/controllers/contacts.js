@@ -1,4 +1,4 @@
-const Contact = require('../models/contact');
+const contactsService = require('../services/contacts');
 
 const list = async (req, res) => {
   const {
@@ -24,11 +24,14 @@ const list = async (req, res) => {
   const order = String(sortOrder).toLowerCase() === 'desc' ? -1 : 1;
   sort[sortBy] = order;
 
-  const totalItems = await Contact.countDocuments(filter);
+  // ensure only user's contacts
+  filter.userId = String(req.user._id);
+
+  const totalItems = await contactsService.countDocuments(filter);
   const totalPages = Math.max(Math.ceil(totalItems / l), 1);
   const skip = (p - 1) * l;
 
-  const data = await Contact.find(filter).sort(sort).skip(skip).limit(l).lean();
+  const data = await contactsService.find(filter, { sort, skip, limit: l });
 
   return res.json({
     status: 200,
@@ -46,24 +49,25 @@ const list = async (req, res) => {
 };
 
 const getById = async (req, res) => {
-  const doc = await Contact.findById(req.params.contactId).lean();
+  const doc = await contactsService.getContactByIdAndUser(req.params.contactId, String(req.user._id));
   if (!doc) return res.status(404).json({ status: 404, message: 'Not found' });
   return res.json({ status: 200, message: 'OK', data: doc });
 };
 
 const createOne = async (req, res) => {
-  const created = await Contact.create(req.body);
+  const payload = Object.assign({}, req.body, { userId: String(req.user._id) });
+  const created = await contactsService.createContact(payload);
   return res.status(201).json({ status: 201, message: 'Created', data: created });
 };
 
 const patchOne = async (req, res) => {
-  const updated = await Contact.findByIdAndUpdate(req.params.contactId, req.body, { new: true, runValidators: true }).lean();
+  const updated = await contactsService.patchContactByIdAndUser(req.params.contactId, String(req.user._id), req.body);
   if (!updated) return res.status(404).json({ status: 404, message: 'Not found' });
   return res.json({ status: 200, message: 'Updated', data: updated });
 };
 
 const removeOne = async (req, res) => {
-  const deleted = await Contact.findByIdAndDelete(req.params.contactId).lean();
+  const deleted = await contactsService.deleteContactByIdAndUser(req.params.contactId, String(req.user._id));
   if (!deleted) return res.status(404).json({ status: 404, message: 'Not found' });
   return res.json({ status: 200, message: 'Deleted', data: deleted._id });
 };

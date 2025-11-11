@@ -1,13 +1,31 @@
 const router = require('express').Router();
-const { list, getById, createOne, patchOne, removeOne } = require('../controllers/contacts');
+const authenticate = require('../middlewares/authenticate');
+const {
+  list,
+  getById,
+  createOne,
+  patchOne,
+  removeOne,
+} = require('../controllers/contacts');
 const validateBody = require('../middlewares/validationBody');
 const isValidId = require('../middlewares/isValidId');
-const { createContactSchema, updateContactSchema } = require('../schemas/contactSchemas');
+const {
+  createContactSchema,
+  updateContactSchema,
+} = require('../schemas/contactSchemas');
+const ctrlWrapper = require('../utils/ctrlWrapper');
 
-router.get('/', list);
-router.get('/:contactId', isValidId(), getById);
-router.post('/', validateBody(createContactSchema), createOne);
-router.patch('/:contactId', isValidId(), validateBody(updateContactSchema), patchOne);
-router.delete('/:contactId', isValidId(), removeOne);
+router.use(authenticate);
+
+router.get('/', ctrlWrapper(list));
+router.get('/:contactId', isValidId(), ctrlWrapper(getById));
+router.post('/', validateBody(createContactSchema), ctrlWrapper(createOne));
+router.patch(
+  '/:contactId',
+  isValidId(),
+  validateBody(updateContactSchema),
+  ctrlWrapper(patchOne),
+);
+router.delete('/:contactId', isValidId(), ctrlWrapper(removeOne));
 
 module.exports = router;
