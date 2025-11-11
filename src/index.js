@@ -14,6 +14,11 @@ app.use(errorHandler);
 const PORT = process.env.PORT || 3000;
 
 (async () => {
-  await initMongoConnection();
+  try {
+    await initMongoConnection();
+  } catch (err) {
+    console.error('Failed to connect to MongoDB:', err.message);
+    process.exit(1);
+  }
   app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 })();
